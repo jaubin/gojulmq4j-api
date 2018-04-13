@@ -24,4 +24,19 @@ public interface GojulMQMessageProducer {
      */
     <T> void sendMessage(final String topic, final GojulMQMessageKeyProvider<T> messageKeyProvider,
                     final T message);
+
+    /**
+     * Send the messages from iterable {@code messages}. This method allows to make batch
+     * transmissions, which usually tend to be faster than single message transmissions.
+     *
+     * @param topic the topic to which messages must be sent.
+     * @param messageKeyProvider the message key provider used.
+     * @param messages the messages to send.
+     * @param <T> the message type.
+     *
+     * @throws NullPointerException if any of the method parameters is {@code null}.
+     * @throws GojulMQException if an error occured while sending the message.
+     */
+    <T> void sendMessages(final String topic, final GojulMQMessageKeyProvider<T> messageKeyProvider,
+                    final Iterable<T> messages);
 }
