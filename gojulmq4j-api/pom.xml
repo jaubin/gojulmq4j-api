@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>org.gojul</groupId>
-        <artifactId>gojulmq4j</artifactId>
+        <artifactId>gojulmq4j-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
