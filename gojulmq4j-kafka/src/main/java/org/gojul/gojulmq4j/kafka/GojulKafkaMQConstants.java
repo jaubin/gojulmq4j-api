@@ -9,12 +9,14 @@ package org.gojul.gojulmq4j.kafka;
 public class GojulKafkaMQConstants {
 
     /**
-     * The property name defining the Kafka hosts and port.
+     * The property name defining the Kafka hosts and port. This
+     * property is mandatory.
      */
     public final static String KAFKA_HOST_PORTS = "kafka.hosts";
 
     /**
-     * The property name defining the schema registry URL.
+     * The property name defining the schema registry URL. This property
+     * is mandatory.
      */
     public final static String SCHEMA_REGISTRY_URL = "avro.host";
 

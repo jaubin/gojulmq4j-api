@@ -7,9 +7,11 @@ package org.gojul.gojulmq4j;
  * should generally considered as being thread-safe, contrary to what happens with
  * producers.
  *
+ * @param <T> the type of messages to be produced.
+ *
  * @author julien
  */
-public interface GojulMQMessageProducer {
+public interface GojulMQMessageProducer<T> {
 
     /**
      * Send the message {@code message} to the MQ on topic with name {@code topic}.
@@ -17,12 +19,11 @@ public interface GojulMQMessageProducer {
      * @param topic the topic to which messages must be sent.
      * @param messageKeyProvider the message key provider used.
      * @param message the message to send itself.
-     * @param <T> the message type.
      *
      * @throws NullPointerException if any of the method parameters is {@code null}.
      * @throws GojulMQException if an error occured while sending the message.
      */
-    <T> void sendMessage(final String topic, final GojulMQMessageKeyProvider<T> messageKeyProvider,
+    void sendMessage(final String topic, final GojulMQMessageKeyProvider<T> messageKeyProvider,
                     final T message);
 
     /**
@@ -32,11 +33,10 @@ public interface GojulMQMessageProducer {
      * @param topic the topic to which messages must be sent.
      * @param messageKeyProvider the message key provider used.
      * @param messages the messages to send.
-     * @param <T> the message type.
      *
      * @throws NullPointerException if any of the method parameters is {@code null}.
      * @throws GojulMQException if an error occured while sending the message.
      */
-    <T> void sendMessages(final String topic, final GojulMQMessageKeyProvider<T> messageKeyProvider,
+    void sendMessages(final String topic, final GojulMQMessageKeyProvider<T> messageKeyProvider,
                     final Iterable<T> messages);
 }
