@@ -4,7 +4,9 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.gojul.gojulmq4j.GojulMQMessageConsumer;
 import org.gojul.gojulmq4j.GojulMQMessageListener;
+import org.gojul.gojulmq4j.GojulMQMessageProducer;
 import org.gojul.gojulmq4j.kafka.GojulMQKafkaMessageConsumer;
 import org.gojul.gojulmq4j.kafka.GojulMQKafkaMessageProducer;
 
@@ -42,7 +44,7 @@ public class GojulMQ4jKafkaTester {
             settings = createConfig();
         }
 
-        final GojulMQKafkaMessageConsumer<Dummy> consumer = new GojulMQKafkaMessageConsumer<>(settings);
+        final GojulMQMessageConsumer<Dummy> consumer = new GojulMQKafkaMessageConsumer<>(settings);
 
         new Thread(new Runnable() {
             @Override
@@ -56,7 +58,7 @@ public class GojulMQ4jKafkaTester {
             }
         }).start();
 
-        GojulMQKafkaMessageProducer<Dummy> producer = new GojulMQKafkaMessageProducer<>(settings);
+        GojulMQMessageProducer<Dummy> producer = new GojulMQKafkaMessageProducer<>(settings);
 
         while (true) {
             Dummy dummy = Dummy.newBuilder().setValue("Hello " + Math.random()).build();
