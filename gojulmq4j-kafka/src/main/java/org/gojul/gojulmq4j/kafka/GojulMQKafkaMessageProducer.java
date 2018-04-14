@@ -13,21 +13,17 @@ import org.gojul.gojulmq4j.GojulMQMessageProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Closeable;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Properties;
 
-import static org.gojul.gojulmq4j.kafka.GojulKafkaMQConstants.*;
-
 /**
  * Class {@code GojulMQKafkaMessageProducer} is the Kafka implementation
- * of the {@link GojulMQMessageProducer} interface. It does not support
- * all the possible options for a Kafka producer, but only the ones
- * specified within {@link GojulKafkaMQConstants} class. Note that
+ * of the {@link GojulMQMessageProducer} interface. Note that
  * this class is thread-safe, and that messages are automatically flushed
  * after being sent. Although this is not the fastest configuration, it is
- * the safest one. So in order to increase performance you should try to favor
+ * the safest one for services intended to run as daemons like this one.
+ * So in order to increase performance you should try to favor
  * batch sending whenever possible.
  *
  * @author julien
@@ -36,48 +32,37 @@ import static org.gojul.gojulmq4j.kafka.GojulKafkaMQConstants.*;
  *           have been generated following Avro conventions, as defined
  *           <a href="https://dzone.com/articles/kafka-avro-serialization-and-the-schema-registry">there</a>.
  */
-public class GojulMQKafkaMessageProducer<T> implements GojulMQMessageProducer<T>, Closeable {
+public class GojulMQKafkaMessageProducer<T> implements GojulMQMessageProducer<T> {
 
     private final static Logger log = LoggerFactory.getLogger(GojulMQKafkaMessageProducer.class);
 
-    private KafkaProducer<String, T> producer;
+    private final KafkaProducer<String, T> producer;
 
     /**
      * Constructor.
-     * @param clientId the client ID used.
-     * @param settings the settings object used. Note that these settings
-     *                 must be set according to the constants defined in {@link GojulKafkaMQConstants}.
+     * @param settings the settings object used. These settings mirror the ones
+     *                 defined in Kafka documentation, except for the key and
+     *                 value serializers which are automatically set to String and
+     *                 Avro serializers respectively.
      *
      * @throws NullPointerException if any of the method parameters is {@code null}.
-     * @throws IllegalArgumentException if any of the mandatory properties is not set.
+     * @throws IllegalArgumentException if any of the mandatory properties is not set,
+     * in our case the bootstrap server URLs, the schema registry URLs and the client ID.
      */
-    public GojulMQKafkaMessageProducer(final String clientId, final Properties settings) {
-        Objects.requireNonNull(clientId, "clientId is null");
+    public GojulMQKafkaMessageProducer(final Properties settings) {
         Objects.requireNonNull(settings, "settigs is null");
-        Preconditions.checkArgument(StringUtils.isNotBlank(settings.getProperty(KAFKA_HOST_PORTS)), String.format("%s not set", KAFKA_HOST_PORTS));
-        Preconditions.checkArgument(StringUtils.isNotBlank(settings.getProperty(SCHEMA_REGISTRY_URL)), String.format("%s not set", SCHEMA_REGISTRY_URL));
+        Preconditions.checkArgument(StringUtils.isNotBlank(settings.getProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG)),
+                String.format("%s not set", ProducerConfig.BOOTSTRAP_SERVERS_CONFIG));
+        Preconditions.checkArgument(StringUtils.isNotBlank(settings.getProperty(ProducerConfig.CLIENT_ID_CONFIG)),
+                String.format("%s not set", ProducerConfig.CLIENT_ID_CONFIG));
+        Preconditions.checkArgument(StringUtils.isNotBlank(settings.getProperty(KafkaAvroSerializerConfig
+                .SCHEMA_REGISTRY_URL_CONFIG)), String.format("%s not set", KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG));
 
-        Properties props = new Properties();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, settings.getProperty(KAFKA_HOST_PORTS));
-        props.put(ProducerConfig.CLIENT_ID_CONFIG, clientId);
-        props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, settings.getProperty(SCHEMA_REGISTRY_URL));
-
+        Properties props = new Properties(settings);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class.getName());
-
-        populatePropertyIfSet(props, ProducerConfig.ACKS_CONFIG, settings, clientId + "." + ACKS_COUNT);
-        populatePropertyIfSet(props, ProducerConfig.BUFFER_MEMORY_CONFIG, settings, clientId + "." + BUFFER_SIZE);
-        populatePropertyIfSet(props, ProducerConfig.RETRIES_CONFIG, settings, clientId + "." + RETRIES_COUNT);
-
+                
         this.producer = new KafkaProducer<>(props);
-    }
-
-    private void populatePropertyIfSet(final Properties targetProperties, final String targetPropertyName,
-                                       final Properties sourceProperties, final String sourcePropertyName) {
-        String val = sourceProperties.getProperty(sourcePropertyName);
-        if (val != null) {
-            targetProperties.setProperty(targetPropertyName, val);
-        }
     }
 
     /**

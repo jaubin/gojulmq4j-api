@@ -1,17 +1,20 @@
 package org.gojul.gojulmq4j;
 
+import java.io.Closeable;
+
 /**
  * Interface {@code GojulMQMessageProducer} is used to produce messages
  * to send to a message broker. Note that it's not up to you to implement
  * this class, it is implemented by the various library implementations. Implementors
  * should generally considered as being thread-safe, contrary to what happens with
- * producers.
+ * producers. Note that in case you do not run this producer as a daemon you must
+ * close it explicitely.
  *
  * @param <T> the type of messages to be produced.
  *
  * @author julien
  */
-public interface GojulMQMessageProducer<T> {
+public interface GojulMQMessageProducer<T> extends Closeable {
 
     /**
      * Send the message {@code message} to the MQ on topic with name {@code topic}.
