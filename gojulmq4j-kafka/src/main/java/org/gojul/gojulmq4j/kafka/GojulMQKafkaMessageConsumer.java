@@ -9,7 +9,7 @@ import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.errors.AuthenticationException;
 import org.apache.kafka.common.errors.AuthorizationException;
 import org.apache.kafka.common.errors.InterruptException;
-import org.codehaus.jackson.map.deser.std.StringDeserializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.gojul.gojulmq4j.GojulMQMessageConsumer;
 import org.gojul.gojulmq4j.GojulMQMessageListener;
 import org.slf4j.Logger;
@@ -58,12 +58,12 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
         Preconditions.checkArgument(StringUtils.isNotBlank(settings.getProperty(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG)),
                 String.format("%s not set", KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG));
 
-        Properties props = new Properties(settings);
+        Properties props = (Properties) settings.clone();
         props.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class.getName());
         props.setProperty(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, Boolean.TRUE.toString());
 
-        this.consumer = new KafkaConsumer<>(settings);
+        this.consumer = new KafkaConsumer<>(props);
         this.isStopped = false;
     }
 

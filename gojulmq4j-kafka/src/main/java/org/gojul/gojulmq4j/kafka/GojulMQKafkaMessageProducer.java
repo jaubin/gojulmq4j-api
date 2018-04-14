@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.codehaus.jackson.map.ser.std.StringSerializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.gojul.gojulmq4j.GojulMQMessageKeyProvider;
 import org.gojul.gojulmq4j.GojulMQMessageProducer;
 import org.slf4j.Logger;
@@ -58,7 +58,7 @@ public class GojulMQKafkaMessageProducer<T> implements GojulMQMessageProducer<T>
         Preconditions.checkArgument(StringUtils.isNotBlank(settings.getProperty(KafkaAvroSerializerConfig
                 .SCHEMA_REGISTRY_URL_CONFIG)), String.format("%s not set", KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG));
 
-        Properties props = new Properties(settings);
+        Properties props = (Properties) settings.clone();
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class.getName());
                 

@@ -1,0 +1,7 @@
+{"namespace": "org.gojul.gojulmq4j.kafka.tester",
+ "type": "record",
+ "name": "Dummy",
+ "fields": [
+     {"name": "value", "type": "string"}
+ ]
+}

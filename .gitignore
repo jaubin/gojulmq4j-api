@@ -27,3 +27,6 @@ target
 # IDE
 .idea
 *.iml
+
+# Other files
+Dummy.java
