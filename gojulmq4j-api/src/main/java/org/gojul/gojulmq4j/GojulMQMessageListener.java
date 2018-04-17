@@ -1,7 +1,7 @@
 package org.gojul.gojulmq4j;
 
 /**
- * Class {@code GojulMQMessageListener} class is in charge
+ * Interface {@code GojulMQMessageListener} is in charge
  * of providing a simple and reusable interface to deal
  * with consumed message. Basically it is a stupid simple listener.
  *

@@ -12,7 +12,7 @@ import java.io.Closeable;
  * different threads, contrary to a producer. An instance of this class should
  * basically be seen as a service that you inject in your code using an IoC mechanism.
  * Note that in case you do not run this consumer as a daemon you must
- *  * close it explicitely.
+ * close it explicitely.
  *
  * @param <T> the type of messages to listen to.
  *
