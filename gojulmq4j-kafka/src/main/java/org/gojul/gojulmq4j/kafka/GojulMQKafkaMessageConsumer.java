@@ -10,6 +10,7 @@ import org.apache.kafka.common.errors.AuthenticationException;
 import org.apache.kafka.common.errors.AuthorizationException;
 import org.apache.kafka.common.errors.InterruptException;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.gojul.gojulmq4j.GojulMQException;
 import org.gojul.gojulmq4j.GojulMQMessageConsumer;
 import org.gojul.gojulmq4j.GojulMQMessageListener;
 import org.slf4j.Logger;
@@ -98,7 +99,7 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
             }
         } catch (InvalidOffsetException | AuthenticationException | AuthorizationException e) {
             log.error("A fatal error occurred - aborting consumer", e);
-            throw e;
+            throw new GojulMQException(e);
         } catch (InterruptException e) {
             log.info("Consumer halted - halting", e);
             throw e;
