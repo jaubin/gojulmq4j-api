@@ -21,6 +21,17 @@
         <module>gojulmq4j-kafka</module>
     </modules>
 
+    <profiles>
+        <profile>
+            <id>test</id>
+            <modules>
+                <module>gojulmq4j-api</module>
+                <module>gojulmq4j-kafka</module>
+                <module>gojulmq4j-kafka-test</module>
+            </modules>
+        </profile>
+    </profiles>
+
     <dependencyManagement>
         <dependencies>
 
