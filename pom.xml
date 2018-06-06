@@ -21,6 +21,10 @@
         <module>gojulmq4j-kafka</module>
     </modules>
 
+    <scm>
+        <developerConnection>scm:git:https://github.com/jaubin/gojulmq4j-api.git</developerConnection>
+    </scm>
+
     <profiles>
         <profile>
             <id>test</id>
