@@ -70,4 +70,15 @@ public class GojulDateTimeConverter {
     public static Long dateTimeMillisToEpochTime(final Date d) {
         return d == null ? null: d.getTime();
     }
+
+    /**
+     * Return the date/time as a form of a {@link Date} from the data of {@code l},
+     * or {@code null} if {@code l} is {@code null}.
+     * @param l the long value to convert.
+     * @return the date/time as a form of a {@link Date} from the data of {@code l},
+     * or {@code null} if {@code l} is {@code null}.
+     */
+    public static Date epochTimeToDateTimeMillis(final Long l) {
+        return l == null ? null: new Date(l);
+    }
 }

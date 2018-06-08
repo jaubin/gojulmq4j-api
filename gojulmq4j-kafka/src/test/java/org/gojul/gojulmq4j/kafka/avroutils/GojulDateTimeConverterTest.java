@@ -46,4 +46,11 @@ public class GojulDateTimeConverterTest {
         Date expected = new Date();
         assertEquals(expected.getTime(), GojulDateTimeConverter.dateTimeMillisToEpochTime(expected).longValue());
     }
+
+    @Test
+    public void testEpochTimeToDateTimeMillis() {
+        assertNull(GojulDateTimeConverter.epochTimeToDateTimeMillis(null));
+        Date d = new Date();
+        assertEquals(d, GojulDateTimeConverter.epochTimeToDateTimeMillis(d.getTime()));
+    }
 }
