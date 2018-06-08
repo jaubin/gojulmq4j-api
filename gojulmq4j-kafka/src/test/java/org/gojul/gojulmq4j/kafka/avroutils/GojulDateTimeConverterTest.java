@@ -9,11 +9,11 @@ import java.util.Date;
 
 import static org.junit.Assert.*;
 
-public class DateTimeConverterTest {
+public class GojulDateTimeConverterTest {
 
     @Test
     public void testDateToEpochDaysWithNullDateReturnNull() {
-        assertNull(DateTimeConverter.dateToEpochDays(null));
+        assertNull(GojulDateTimeConverter.dateToEpochDays(null));
     }
 
     @Test
@@ -23,12 +23,12 @@ public class DateTimeConverterTest {
 
         Date d = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        assertEquals((int) ChronoUnit.DAYS.between(epoch, localDate), DateTimeConverter.dateToEpochDays(d).intValue());
+        assertEquals((int) ChronoUnit.DAYS.between(epoch, localDate), GojulDateTimeConverter.dateToEpochDays(d).intValue());
     }
 
     @Test
     public void testEpochDaysToDateWithNullEpochDaysReturnNull() {
-        assertNull(DateTimeConverter.epochDaysToDate(null));
+        assertNull(GojulDateTimeConverter.epochDaysToDate(null));
     }
 
     @Test
@@ -37,6 +37,13 @@ public class DateTimeConverterTest {
 
         Date expected = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        assertEquals(expected, DateTimeConverter.epochDaysToDate(42000));
+        assertEquals(expected, GojulDateTimeConverter.epochDaysToDate(42000));
+    }
+
+    @Test
+    public void testDateTimeMillisToEpochTime() {
+        assertNull(GojulDateTimeConverter.dateTimeMillisToEpochTime(null));
+        Date expected = new Date();
+        assertEquals(expected.getTime(), GojulDateTimeConverter.dateTimeMillisToEpochTime(expected).longValue());
     }
 }

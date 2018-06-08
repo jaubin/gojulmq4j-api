@@ -6,20 +6,20 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 /**
- * Class {@code DateTimeConverter} provides easy-to-use methods
+ * Class {@code GojulDateTimeConverter} provides easy-to-use methods
  * that make it possible to convert date and times from/to Avro
  * long and int formats.
  *
  * @author jaubin
  */
-public class DateTimeConverter {
+public class GojulDateTimeConverter {
 
     /**
      * Jan 1st, 1970
      */
     final static LocalDate EPOCH = LocalDate.ofEpochDay(0L);
 
-    private DateTimeConverter() {
+    private GojulDateTimeConverter() {
 
     }
 
@@ -58,5 +58,16 @@ public class DateTimeConverter {
         LocalDate localDate = LocalDate.ofEpochDay(d.longValue());
 
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    /**
+     * Return the date/time in milliseconds converted to epoch time in {@link Date}
+     * {@code d}, or {@code null} if {@code d} is {@code null}.
+     * @param d the {@link Date} to convert.
+     * @return the date/time in milliseconds converted to epoch time in {@link Date}
+     * {@code d}, or {@code null} if {@code d} is {@code null}.
+     */
+    public static Long dateTimeMillisToEpochTime(final Date d) {
+        return d == null ? null: d.getTime();
     }
 }
