@@ -23,6 +23,18 @@ public class GojulAvroDecimalConverterTest {
             .unscaledValue().toByteArray());
 
         assertEquals(expected, GojulAvroDecimalConverter.decimalToByteBuffer(bd));
+    }
 
+    @Test
+    public void testByteBufferToDecimalWithNullValueReturnsNull() {
+        assertNull(GojulAvroDecimalConverter.byteBufferToDecimal(null));
+    }
+
+    @Test
+    public void testByteBufferToDecimal() {
+        BigDecimal bd = new BigDecimal(42.0).setScale(GojulAvroDecimalConverter.AVRO_BIGDECIMAL_SCALE, RoundingMode.HALF_EVEN);
+        ByteBuffer bb = ByteBuffer.wrap(bd.unscaledValue().toByteArray());
+
+        assertEquals(bd, GojulAvroDecimalConverter.byteBufferToDecimal(bb));
     }
 }
