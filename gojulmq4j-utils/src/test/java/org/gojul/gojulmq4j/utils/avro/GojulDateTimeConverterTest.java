@@ -1,4 +1,4 @@
-package org.gojul.gojulmq4j.kafka.avroutils;
+package org.gojul.gojulmq4j.utils.avro;
 
 import org.junit.Test;
 
@@ -7,7 +7,8 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class GojulDateTimeConverterTest {
 

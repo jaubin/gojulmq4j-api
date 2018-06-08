@@ -1,4 +1,4 @@
-package org.gojul.gojulmq4j.kafka.avroutils;
+package org.gojul.gojulmq4j.utils.avro;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
