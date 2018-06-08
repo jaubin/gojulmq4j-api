@@ -25,4 +25,18 @@ public class DateTimeConverterTest {
 
         assertEquals((int) ChronoUnit.DAYS.between(epoch, localDate), DateTimeConverter.dateToEpochDays(d).intValue());
     }
+
+    @Test
+    public void testEpochDaysToDateWithNullEpochDaysReturnNull() {
+        assertNull(DateTimeConverter.epochDaysToDate(null));
+    }
+
+    @Test
+    public void testEpochDaysToDate() {
+        LocalDate localDate = LocalDate.ofEpochDay(42000L);
+
+        Date expected = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        assertEquals(expected, DateTimeConverter.epochDaysToDate(42000));
+    }
 }

@@ -24,12 +24,12 @@ public class DateTimeConverter {
     }
 
     /**
-     * Return the number days since epoch (Jan 1st, 1970, 00:00:00 GMT)
+     * Return the number of days since epoch (Jan 1st, 1970, 00:00:00 GMT)
      * in date {@code d}, or {@code null} if {@code d} is {@code null}.
      *
      * @param d the date for which the conversion must be done.
      *
-     * @return the number days since epoch (Jan 1st, 1970, 00:00:00 GMT)
+     * @return the number of days since epoch (Jan 1st, 1970, 00:00:00 GMT)
      * in date {@code d}, or {@code null} if {@code d} is {@code null}.
      */
     public static Integer dateToEpochDays(final Date d) {
@@ -40,5 +40,23 @@ public class DateTimeConverter {
         LocalDate localDate = d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         // The lib will probably be dead far before 1 million of years... ;-)
         return (int) ChronoUnit.DAYS.between(EPOCH, localDate);
+    }
+
+    /**
+     * Return the date which corresponds to the number of days since epoch,
+     * or {@code null} if {@code d} is {@code null}.
+     *
+     * @param d the number of days to convert.
+     *
+     * @return the date which corresponds to the number of days since epoch,
+     * or {@code null} if {@code d} is {@code null}.
+     */
+    public static Date epochDaysToDate(final Integer d) {
+        if (d == null) {
+            return null;
+        }
+        LocalDate localDate = LocalDate.ofEpochDay(d.longValue());
+
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 }
