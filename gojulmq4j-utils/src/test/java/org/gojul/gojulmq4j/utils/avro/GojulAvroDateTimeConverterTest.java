@@ -10,11 +10,11 @@ import java.util.Date;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class GojulDateTimeConverterTest {
+public class GojulAvroDateTimeConverterTest {
 
     @Test
     public void testDateToEpochDaysWithNullDateReturnNull() {
-        assertNull(GojulDateTimeConverter.dateToEpochDays(null));
+        assertNull(GojulAvroDateTimeConverter.dateToEpochDays(null));
     }
 
     @Test
@@ -24,12 +24,12 @@ public class GojulDateTimeConverterTest {
 
         Date d = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        assertEquals((int) ChronoUnit.DAYS.between(epoch, localDate), GojulDateTimeConverter.dateToEpochDays(d).intValue());
+        assertEquals((int) ChronoUnit.DAYS.between(epoch, localDate), GojulAvroDateTimeConverter.dateToEpochDays(d).intValue());
     }
 
     @Test
     public void testEpochDaysToDateWithNullEpochDaysReturnNull() {
-        assertNull(GojulDateTimeConverter.epochDaysToDate(null));
+        assertNull(GojulAvroDateTimeConverter.epochDaysToDate(null));
     }
 
     @Test
@@ -38,20 +38,20 @@ public class GojulDateTimeConverterTest {
 
         Date expected = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        assertEquals(expected, GojulDateTimeConverter.epochDaysToDate(42000));
+        assertEquals(expected, GojulAvroDateTimeConverter.epochDaysToDate(42000));
     }
 
     @Test
     public void testDateTimeMillisToEpochTime() {
-        assertNull(GojulDateTimeConverter.dateTimeMillisToEpochTime(null));
+        assertNull(GojulAvroDateTimeConverter.dateTimeMillisToEpochTime(null));
         Date expected = new Date();
-        assertEquals(expected.getTime(), GojulDateTimeConverter.dateTimeMillisToEpochTime(expected).longValue());
+        assertEquals(expected.getTime(), GojulAvroDateTimeConverter.dateTimeMillisToEpochTime(expected).longValue());
     }
 
     @Test
     public void testEpochTimeToDateTimeMillis() {
-        assertNull(GojulDateTimeConverter.epochTimeToDateTimeMillis(null));
+        assertNull(GojulAvroDateTimeConverter.epochTimeToDateTimeMillis(null));
         Date d = new Date();
-        assertEquals(d, GojulDateTimeConverter.epochTimeToDateTimeMillis(d.getTime()));
+        assertEquals(d, GojulAvroDateTimeConverter.epochTimeToDateTimeMillis(d.getTime()));
     }
 }
