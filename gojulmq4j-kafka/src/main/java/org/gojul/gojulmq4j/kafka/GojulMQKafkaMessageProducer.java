@@ -90,7 +90,7 @@ public class GojulMQKafkaMessageProducer<T> implements GojulMQMessageProducer<T>
 
         int i = 0;
         for (T message: messages) {
-            Preconditions.checkNotNull(message, "message is null");
+            Objects.requireNonNull(message, "message is null");
             producer.send(new ProducerRecord<>(topic, messageKeyProvider.getKey(message), message));
             i++;
         }
