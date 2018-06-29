@@ -23,8 +23,8 @@
 
     <scm>
         <developerConnection>scm:git:https://github.com/jaubin/gojulmq4j-api.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <profiles>
         <profile>
@@ -52,7 +52,6 @@
                 <artifactId>commons-lang3</artifactId>
                 <version>3.7</version>
             </dependency>
-
 
             <dependency>
                 <groupId>org.slf4j</groupId>
