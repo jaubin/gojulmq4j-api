@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.gojul</groupId>
     <artifactId>gojulmq4j-parent</artifactId>
-    <version>0.0.4-SNAPSHOT</version>
+    <version>0.0.5-SNAPSHOT</version>
     <name>gojulmq4j</name>
     <description>Abstraction of the MQ producers and consumers and various implementations for the most common MQ</description>
     <packaging>pom</packaging>

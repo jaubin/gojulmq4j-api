@@ -1,9 +1,10 @@
-package org.gojul.gojulmq4j.utils.errorhandling;
+package org.gojul.gojulmq4j.errorhandling;
 
 import org.gojul.gojulmq4j.GojulMQException;
 import org.gojul.gojulmq4j.GojulMQMessageKeyProvider;
 import org.gojul.gojulmq4j.GojulMQMessageListener;
 import org.gojul.gojulmq4j.GojulMQMessageProducer;
+import org.gojul.gojulmq4j.errorhandling.GojulMQFailedMessageListener;
 import org.junit.Before;
 import org.junit.Test;
 

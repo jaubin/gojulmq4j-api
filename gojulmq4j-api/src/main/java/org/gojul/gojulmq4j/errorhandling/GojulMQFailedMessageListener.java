@@ -1,4 +1,4 @@
-package org.gojul.gojulmq4j.utils.errorhandling;
+package org.gojul.gojulmq4j.errorhandling;
 
 import org.gojul.gojulmq4j.GojulMQException;
 import org.gojul.gojulmq4j.GojulMQMessageListener;
