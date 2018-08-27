@@ -1,5 +1,6 @@
 package org.gojul.gojulmq4j.utils.errorhandling;
 
+import org.gojul.gojulmq4j.GojulMQException;
 import org.gojul.gojulmq4j.GojulMQMessageListener;
 import org.gojul.gojulmq4j.GojulMQMessageProducer;
 import org.slf4j.Logger;
@@ -48,6 +49,12 @@ public class GojulMQFailedMessageListener<T> implements GojulMQMessageListener<T
     public void onMessage(T message) {
         try {
             listener.onMessage(message);
+        } catch (GojulMQException e) {
+            // We forward the exceptions due to the message queue system
+            // such as the ones that would be sent by a producer in order
+            // to avoid masking failures.
+            log.error("Error with the MQ system");
+            throw e;
         } catch (RuntimeException e) {
             log.error("Error processing message", e);
             producer.sendMessage(errorTopic, m -> null, message);

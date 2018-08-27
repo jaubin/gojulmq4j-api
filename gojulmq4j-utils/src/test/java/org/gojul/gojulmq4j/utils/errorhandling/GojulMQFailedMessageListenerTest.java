@@ -1,5 +1,6 @@
 package org.gojul.gojulmq4j.utils.errorhandling;
 
+import org.gojul.gojulmq4j.GojulMQException;
 import org.gojul.gojulmq4j.GojulMQMessageKeyProvider;
 import org.gojul.gojulmq4j.GojulMQMessageListener;
 import org.gojul.gojulmq4j.GojulMQMessageProducer;
@@ -43,6 +44,19 @@ public class GojulMQFailedMessageListenerTest {
 
         verify(listener).onMessage(42);
         verifyNoMoreInteractions(producer);
+    }
+
+    @Test(expected = GojulMQException.class)
+    public void testOnMessageWithMQExceptionForwardsException() {
+        GojulMQMessageListener<Integer> errorListener = new GojulMQMessageListener<Integer>() {
+            @Override
+            public void onMessage(Integer message) {
+                throw new GojulMQException();
+            }
+        };
+        GojulMQMessageListener<Integer> hospitalListener = new GojulMQFailedMessageListener<>(producer, errorListener,
+                "hello");
+        hospitalListener.onMessage(42);
     }
 
     @Test
