@@ -92,8 +92,16 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
             ConsumerRecords<String, T> records = consumer.poll(100L);
 
             if (records.count() > 0) {
+                int countProcessed = 0;
+
                 for (ConsumerRecord<String, T> record: records) {
                     listener.onMessage(record.value());
+                    countProcessed++;
+
+                    if (countProcessed > 100) {
+                        consumer.commitSync();
+                        countProcessed = 0;
+                    }
                 }
                 consumer.commitSync();
             }
