@@ -4,13 +4,12 @@ import org.gojul.gojulmq4j.GojulMQException;
 import org.gojul.gojulmq4j.GojulMQMessageKeyProvider;
 import org.gojul.gojulmq4j.GojulMQMessageListener;
 import org.gojul.gojulmq4j.GojulMQMessageProducer;
-import org.gojul.gojulmq4j.errorhandling.GojulMQFailedMessageListener;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.mockito.Mockito.*;
 
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class GojulMQFailedMessageListenerTest {
 
     private GojulMQMessageProducer<Integer> producer;
