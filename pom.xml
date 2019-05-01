@@ -18,6 +18,7 @@
     <modules>
         <module>gojulmq4j-api</module>
         <module>gojulmq4j-kafka</module>
+        <module>gojulmq4j-kafka-test</module>
         <module>gojulmq4j-utils</module>
     </modules>
 

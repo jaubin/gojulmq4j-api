@@ -40,6 +40,10 @@
 
     <artifactId>gojulmq4j-kafka-test</artifactId>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.gojul</groupId>
