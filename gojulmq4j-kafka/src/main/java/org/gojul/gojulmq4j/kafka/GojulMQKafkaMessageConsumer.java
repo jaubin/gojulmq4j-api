@@ -6,6 +6,7 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.KafkaException;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.AuthenticationException;
 import org.apache.kafka.common.errors.AuthorizationException;
 import org.apache.kafka.common.errors.InterruptException;
@@ -16,6 +17,7 @@ import org.gojul.gojulmq4j.GojulMQMessageListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Properties;
@@ -63,6 +65,7 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
         props.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class.getName());
         props.setProperty(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, Boolean.TRUE.toString());
+        props.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, Boolean.FALSE.toString());
 
         this.consumer = new KafkaConsumer<>(props);
         this.isStopped = false;
@@ -99,7 +102,8 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
                     countProcessed++;
 
                     if (countProcessed > 100) {
-                        consumer.commitSync();
+                        consumer.commitSync(Collections.singletonMap(getPartition(records, record),
+                                new OffsetAndMetadata(record.offset() + 1L)));
                         countProcessed = 0;
                     }
                 }
@@ -114,6 +118,19 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
         } catch (KafkaException e) {
             log.error("Error while processing message - skipping this message !", e);
         }
+    }
+
+    private TopicPartition getPartition(ConsumerRecords<String, T> records, ConsumerRecord<String, T> record) {
+        int partNum = record.partition();
+        String topicName = record.topic();
+        for (TopicPartition tp: records.partitions()) {
+            if (tp.partition() == partNum
+                && topicName.equals(tp.topic())) {
+                return tp;
+            }
+        }
+        throw new IllegalArgumentException(String.format("No partition found for topic name %s and partition num %d",
+                topicName, partNum));
     }
 
     /**
