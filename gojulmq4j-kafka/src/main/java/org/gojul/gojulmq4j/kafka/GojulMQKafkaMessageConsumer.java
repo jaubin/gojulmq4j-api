@@ -133,8 +133,8 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
         Map<TopicPartition, OffsetAndMetadata> result = new HashMap<>();
 
         for (Map.Entry<Integer, Long> entry: offsetPerPartition.entrySet()) {
-           TopicPartition topicPart = getPartition(records, entry.getKey().intValue(), topicName);
-           result.put(topicPart, new OffsetAndMetadata(entry.getValue().longValue()));
+            TopicPartition topicPart = getPartition(records, entry.getKey().intValue(), topicName);
+            result.put(topicPart, new OffsetAndMetadata(entry.getValue().longValue()));
         }
         
         return result;
