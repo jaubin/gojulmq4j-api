@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -82,29 +84,32 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
 
         try {
             while (!isStopped) {
-                consumeMessages(messageListener);
+                consumeMessagesForSinglePoll(topic, messageListener);
             }
         } finally{
             consumer.close();
         }
     }
 
-    private void consumeMessages(final GojulMQMessageListener<T> listener) {
+    private void consumeMessagesForSinglePoll(final String topicName, final GojulMQMessageListener<T> listener) {
         try {
             ConsumerRecords<String, T> records = consumer.poll(100L);
 
             if (records.count() > 0) {
                 int countProcessed = 0;
 
+                Map<Integer, Long> offsetPerPartition = new HashMap<>();
+
                 for (ConsumerRecord<String, T> record: records) {
                     listener.onMessage(record.value());
                     countProcessed++;
+                    offsetPerPartition.put(Integer.valueOf(record.partition()),
+                       Long.valueOf(record.offset() + 1L));
 
                     if (countProcessed > 100) {
                         // We do nothing for the callback as this is just a "backup" commit in case we get
                         // lots of message in a single polling
-                        consumer.commitAsync(Collections.singletonMap(getPartition(records, record),
-                                new OffsetAndMetadata(record.offset() + 1L)),
+                        consumer.commitAsync(buildOffsetMap(records, offsetPerPartition, topicName),
                                 (map, ignored) -> {});
                         countProcessed = 0;
                     }
@@ -123,9 +128,20 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
         }
     }
 
-    private TopicPartition getPartition(ConsumerRecords<String, T> records, ConsumerRecord<String, T> record) {
-        int partNum = record.partition();
-        String topicName = record.topic();
+    private Map<TopicPartition, OffsetAndMetadata> buildOffsetMap(final ConsumerRecords<String, T> records,
+        final Map<Integer, Long> offsetPerPartition, final String topicName) {
+        Map<TopicPartition, OffsetAndMetadata> result = new HashMap<>();
+
+        for (Map.Entry<Integer, Long> entry: offsetPerPartition.entrySet()) {
+           TopicPartition topicPart = getPartition(records, entry.getKey().intValue(), topicName);
+           result.put(topicPart, new OffsetAndMetadata(entry.getValue().longValue()));
+        }
+        
+        return result;
+    }
+
+    private TopicPartition getPartition(final ConsumerRecords<String, T> records, 
+        final int partNum, final String topicName) {
         for (TopicPartition tp: records.partitions()) {
             if (tp.partition() == partNum
                 && topicName.equals(tp.topic())) {
