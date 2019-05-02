@@ -101,12 +101,14 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
                     countProcessed++;
 
                     if (countProcessed > 100) {
-                        consumer.commitSync(Collections.singletonMap(getPartition(records, record),
-                                new OffsetAndMetadata(record.offset() + 1L)));
+                        // We do nothing for the callback as this is just a "backup" commit in case we get
+                        // lots of message in a single polling
+                        consumer.commitAsync(Collections.singletonMap(getPartition(records, record),
+                                new OffsetAndMetadata(record.offset() + 1L)),
+                                (map, ignored) -> {});
                         countProcessed = 0;
                     }
                 }
-                consumer.commitSync();
             }
         } catch (InvalidOffsetException | AuthenticationException | AuthorizationException e) {
             log.error("A fatal error occurred - aborting consumer", e);
@@ -116,6 +118,8 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
             throw e;
         } catch (KafkaException e) {
             log.error("Error while processing message - skipping this message !", e);
+        } finally {
+            consumer.commitSync();
         }
     }
 
