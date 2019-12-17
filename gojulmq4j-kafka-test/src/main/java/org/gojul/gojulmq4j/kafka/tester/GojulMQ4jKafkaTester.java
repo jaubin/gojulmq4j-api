@@ -25,15 +25,78 @@ public class GojulMQ4jKafkaTester {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ProducerConfig.CLIENT_ID_CONFIG, "TestProducer");
         props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG,
-                "http://localhost:8081");
+              "http://localhost:8081");
 
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "TestConsumer");
         props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG,
-                "http://localhost:8081");
-        
+              "http://localhost:8081");
+
 
         return props;
+    }
+
+    private static void testWithAvro(final Properties settings) {
+        final GojulMQMessageConsumer<Dummy> consumer = new GojulMQKafkaMessageConsumer<>(settings, Dummy.class);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                consumer.consumeMessages("dummyTopic", new GojulMQMessageListener<Dummy>() {
+                    @Override
+                    public void onMessage(Dummy dummy) {
+                        System.out.println("Consumed with Avro : " + dummy.getValue());
+                    }
+                });
+            }
+        }).start();
+
+        GojulMQMessageProducer<Dummy> producer = new GojulMQKafkaMessageProducer<>(settings, Dummy.class);
+
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                while (true) {
+                    Dummy dummy = Dummy.newBuilder().setValue("Hello " + Math.random()).build();
+                    producer.sendMessage("dummyTopic", e -> e.getValue().toString(), dummy);
+                    System.out.println("Produced with Avro : " + dummy.getValue());
+                }
+            }
+        }).start();
+    }
+
+    private static void testWithoutAvro(final Properties props) {
+        Properties settings = (Properties) props.clone();
+        settings.remove(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG);
+
+        final GojulMQMessageConsumer<String> consumer = new GojulMQKafkaMessageConsumer<>(settings, String.class);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                consumer.consumeMessages("stringTopic", new GojulMQMessageListener<String>() {
+                    @Override
+                    public void onMessage(String s) {
+                        System.out.println("Consumed without Avro : " + s);
+                    }
+                });
+            }
+        }).start();
+
+        GojulMQMessageProducer<String> producer = new GojulMQKafkaMessageProducer<>(settings, String.class);
+
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                while (true) {
+                    String value = "Goodbye " + Math.random();
+                    producer.sendMessage("stringTopic", e -> e, value);
+                    System.out.println("Produced without Avro : " + value);
+                }
+            }
+        }).start();
     }
 
     public static void main(final String[] args) throws Throwable {
@@ -44,28 +107,7 @@ public class GojulMQ4jKafkaTester {
             settings = createConfig();
         }
 
-        final GojulMQMessageConsumer<Dummy> consumer = new GojulMQKafkaMessageConsumer<>(settings);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                consumer.consumeMessages("dummyTopic", new GojulMQMessageListener<Dummy>() {
-                    @Override
-                    public void onMessage(Dummy dummy) {
-                        System.out.println("Consumed : " + dummy.getValue());
-                    }
-                });
-            }
-        }).start();
-
-        GojulMQMessageProducer<Dummy> producer = new GojulMQKafkaMessageProducer<>(settings);
-
-        while (true) {
-            Dummy dummy = Dummy.newBuilder().setValue("Hello " + Math.random()).build();
-
-            producer.sendMessage("dummyTopic", e -> e.getValue().toString(), dummy);
-
-            System.out.println("Produced : " + dummy.getValue());
-        }
+        testWithAvro(settings);
+        testWithoutAvro(settings);
     }
 }

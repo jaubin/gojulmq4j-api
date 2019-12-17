@@ -44,25 +44,42 @@ public class GojulMQKafkaMessageProducer<T> implements GojulMQMessageProducer<T>
      *                 defined in Kafka documentation, except for the key and
      *                 value serializers which are automatically set to String and
      *                 Avro serializers respectively.
+     * @param cls the object type for this consumer. THis must be the type parameter
+     *            of this class.
      *
      * @throws NullPointerException if any of the method parameters is {@code null}.
-     * @throws IllegalArgumentException if any of the mandatory properties is not set,
-     * in our case the bootstrap server URLs, the schema registry URLs and the client ID.
+     * @throws IllegalArgumentException if one of the mandatory parameters is not set, i.e. the Kafka server URL(s),
+     *      * the client ID. It is possible to avoid specifying the schema registry URL only if the specified
+     *      * class is {@link String}.
      */
-    public GojulMQKafkaMessageProducer(final Properties settings) {
-        Objects.requireNonNull(settings, "settigs is null");
+    public GojulMQKafkaMessageProducer(final Properties settings, final Class<T> cls) {
+        Objects.requireNonNull(settings, "settings is null");
+        Objects.requireNonNull(cls, "cls is null");
+
         Preconditions.checkArgument(StringUtils.isNotBlank(settings.getProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG)),
                 String.format("%s not set", ProducerConfig.BOOTSTRAP_SERVERS_CONFIG));
         Preconditions.checkArgument(StringUtils.isNotBlank(settings.getProperty(ProducerConfig.CLIENT_ID_CONFIG)),
                 String.format("%s not set", ProducerConfig.CLIENT_ID_CONFIG));
-        Preconditions.checkArgument(StringUtils.isNotBlank(settings.getProperty(KafkaAvroSerializerConfig
-                .SCHEMA_REGISTRY_URL_CONFIG)), String.format("%s not set", KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG));
+
+        boolean useAvro = useAvro(cls);
+
 
         Properties props = (Properties) settings.clone();
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class.getName());
+
+        if (useAvro) {
+            Preconditions.checkArgument(StringUtils.isNotBlank(settings.getProperty(KafkaAvroSerializerConfig
+                    .SCHEMA_REGISTRY_URL_CONFIG)), String.format("%s not set", KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG));
+            props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class.getName());
+        } else {
+            props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        }
                 
         this.producer = new KafkaProducer<>(props);
+    }
+
+    private boolean useAvro(Class<T> cls) {
+        return cls != String.class;
     }
 
     /**
