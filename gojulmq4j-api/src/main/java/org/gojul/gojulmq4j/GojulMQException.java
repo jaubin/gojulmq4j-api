@@ -17,6 +17,7 @@ public class GojulMQException extends RuntimeException {
 
     /**
      * Constructor.
+     *
      * @param message the exception message.
      */
     public GojulMQException(final String message) {
@@ -25,6 +26,7 @@ public class GojulMQException extends RuntimeException {
 
     /**
      * Constructor.
+     *
      * @param cause the exception cause.
      */
     public GojulMQException(final Throwable cause) {
@@ -33,8 +35,9 @@ public class GojulMQException extends RuntimeException {
 
     /**
      * Constructor.
+     *
      * @param message the exception message.
-     * @param cause the exception cause.
+     * @param cause   the exception cause.
      */
     public GojulMQException(final String message, final Throwable cause) {
         super(message, cause);

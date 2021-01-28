@@ -11,7 +11,6 @@ import java.io.Closeable;
  * close it explicitely.
  *
  * @param <T> the type of messages to be produced.
- *
  * @author julien
  */
 public interface GojulMQMessageProducer<T> extends Closeable {
@@ -19,27 +18,25 @@ public interface GojulMQMessageProducer<T> extends Closeable {
     /**
      * Send the message {@code message} to the MQ on topic with name {@code topic}.
      *
-     * @param topic the topic to which messages must be sent.
+     * @param topic              the topic to which messages must be sent.
      * @param messageKeyProvider the message key provider used.
-     * @param message the message to send itself.
-     *
+     * @param message            the message to send itself.
      * @throws NullPointerException if any of the method parameters is {@code null}.
-     * @throws GojulMQException if an error occured while sending the message.
+     * @throws GojulMQException     if an error occured while sending the message.
      */
     void sendMessage(final String topic, final GojulMQMessageKeyProvider<T> messageKeyProvider,
-                    final T message);
+                     final T message);
 
     /**
      * Send the messages from iterable {@code messages}. This method allows to make batch
      * transmissions, which usually tend to be faster than single message transmissions.
      *
-     * @param topic the topic to which messages must be sent.
+     * @param topic              the topic to which messages must be sent.
      * @param messageKeyProvider the message key provider used.
-     * @param messages the messages to send.
-     *
+     * @param messages           the messages to send.
      * @throws NullPointerException if any of the method parameters is {@code null}.
-     * @throws GojulMQException if an error occured while sending the message.
+     * @throws GojulMQException     if an error occured while sending the message.
      */
     void sendMessages(final String topic, final GojulMQMessageKeyProvider<T> messageKeyProvider,
-                    final Iterable<T> messages);
+                      final Iterable<T> messages);
 }

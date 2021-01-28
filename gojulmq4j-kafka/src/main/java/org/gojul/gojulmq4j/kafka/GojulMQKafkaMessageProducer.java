@@ -27,11 +27,10 @@ import static org.gojul.gojulmq4j.utils.misc.GojulStrings.isNotBlank;
  * So in order to increase performance you should try to favor
  * batch sending whenever possible.
  *
- * @author julien
- *
  * @param <T> the type of messages to be produced. Note that this type must
- *           have been generated following Avro conventions, as defined
- *           <a href="https://dzone.com/articles/kafka-avro-serialization-and-the-schema-registry">there</a>.
+ *            have been generated following Avro conventions, as defined
+ *            <a href="https://dzone.com/articles/kafka-avro-serialization-and-the-schema-registry">there</a>.
+ * @author julien
  */
 public class GojulMQKafkaMessageProducer<T> implements GojulMQMessageProducer<T> {
 
@@ -41,17 +40,17 @@ public class GojulMQKafkaMessageProducer<T> implements GojulMQMessageProducer<T>
 
     /**
      * Constructor.
+     *
      * @param settings the settings object used. These settings mirror the ones
      *                 defined in Kafka documentation, except for the key and
      *                 value serializers which are automatically set to String and
      *                 Avro serializers respectively.
-     * @param cls the object type for this consumer. THis must be the type parameter
-     *            of this class.
-     *
-     * @throws NullPointerException if any of the method parameters is {@code null}.
+     * @param cls      the object type for this consumer. THis must be the type parameter
+     *                 of this class.
+     * @throws NullPointerException     if any of the method parameters is {@code null}.
      * @throws IllegalArgumentException if one of the mandatory parameters is not set, i.e. the Kafka server URL(s),
-     *      * the client ID. It is possible to avoid specifying the schema registry URL only if the specified
-     *      * class is {@link String}.
+     *                                  * the client ID. It is possible to avoid specifying the schema registry URL only if the specified
+     *                                  * class is {@link String}.
      */
     public GojulMQKafkaMessageProducer(final Properties settings, final Class<T> cls) {
         Objects.requireNonNull(settings, "settings is null");
@@ -75,7 +74,7 @@ public class GojulMQKafkaMessageProducer<T> implements GojulMQMessageProducer<T>
         } else {
             props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         }
-                
+
         this.producer = new KafkaProducer<>(props);
     }
 
@@ -107,7 +106,7 @@ public class GojulMQKafkaMessageProducer<T> implements GojulMQMessageProducer<T>
         log.info(String.format("Starting to send messages to topic %s", topic));
 
         int i = 0;
-        for (T message: messages) {
+        for (T message : messages) {
             Objects.requireNonNull(message, "message is null");
             producer.send(new ProducerRecord<>(topic, messageKeyProvider.getKey(message), message));
             i++;

@@ -61,6 +61,7 @@ public class GojulAvroDecimalConverter {
      * </p>
      * <p><b>WARNING !</b> the encoded decimals must have their scale set to {@link GojulAvroDecimalConverter#AVRO_BIGDECIMAL_SCALE},
      * otherwise data loss will occur !</p>
+     *
      * @param byteBuffer the value to convert.
      * @return the converted value.
      */

@@ -29,7 +29,7 @@ import static org.gojul.gojulmq4j.utils.misc.GojulStrings.isNotBlank;
  * this one.
  *
  * @param <T> the type of messages to be read. Note that these messages must follow the norm
- *           defined by Avro so that they're recorded in the schema registry.
+ *            defined by Avro so that they're recorded in the schema registry.
  */
 public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T> {
 
@@ -42,16 +42,15 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
      * Constructor.
      *
      * @param settings the settings object used. These settings mirror the ones
-     *                  defined in Kafka documentation, except for the key and
-     *                  value deserializers which are automatically set to string
-     *                  and Avro deserializers respectively.
-     * @param cls the object type for this consumer. THis must be the type parameter
-     *            of this class.
-     *
-     * @throws NullPointerException if any of the method parameters is {@code null}.
+     *                 defined in Kafka documentation, except for the key and
+     *                 value deserializers which are automatically set to string
+     *                 and Avro deserializers respectively.
+     * @param cls      the object type for this consumer. THis must be the type parameter
+     *                 of this class.
+     * @throws NullPointerException     if any of the method parameters is {@code null}.
      * @throws IllegalArgumentException if one of the mandatory parameters is not set, i.e. the Kafka server URL(s),
-     * the consumer group ID. It is possible to avoid specifying the schema registry URL only if the specified
-     * class is {@link String}.
+     *                                  the consumer group ID. It is possible to avoid specifying the schema registry URL only if the specified
+     *                                  class is {@link String}.
      */
     public GojulMQKafkaMessageConsumer(final Properties settings, final Class<T> cls) {
         Objects.requireNonNull(settings, "settings is null");
@@ -98,7 +97,7 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
             while (!isStopped) {
                 consumeMessagesForSinglePoll(topic, messageListener);
             }
-        } finally{
+        } finally {
             consumer.close();
         }
     }
@@ -112,17 +111,18 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
 
                 Map<Integer, Long> offsetPerPartition = new HashMap<>();
 
-                for (ConsumerRecord<String, T> record: records) {
+                for (ConsumerRecord<String, T> record : records) {
                     listener.onMessage(record.value());
                     countProcessed++;
                     offsetPerPartition.put(Integer.valueOf(record.partition()),
-                       Long.valueOf(record.offset() + 1L));
+                            Long.valueOf(record.offset() + 1L));
 
                     if (countProcessed > 100) {
                         // We do nothing for the callback as this is just a "backup" commit in case we get
                         // lots of message in a single polling
                         consumer.commitAsync(buildOffsetMap(records, offsetPerPartition, topicName),
-                                (map, ignored) -> {});
+                                (map, ignored) -> {
+                                });
                         countProcessed = 0;
                     }
                 }
@@ -141,22 +141,22 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
     }
 
     private Map<TopicPartition, OffsetAndMetadata> buildOffsetMap(final ConsumerRecords<String, T> records,
-        final Map<Integer, Long> offsetPerPartition, final String topicName) {
+                                                                  final Map<Integer, Long> offsetPerPartition, final String topicName) {
         Map<TopicPartition, OffsetAndMetadata> result = new HashMap<>();
 
-        for (Map.Entry<Integer, Long> entry: offsetPerPartition.entrySet()) {
+        for (Map.Entry<Integer, Long> entry : offsetPerPartition.entrySet()) {
             TopicPartition topicPart = getPartition(records, entry.getKey().intValue(), topicName);
             result.put(topicPart, new OffsetAndMetadata(entry.getValue().longValue()));
         }
-        
+
         return result;
     }
 
-    private TopicPartition getPartition(final ConsumerRecords<String, T> records, 
-        final int partNum, final String topicName) {
-        for (TopicPartition tp: records.partitions()) {
+    private TopicPartition getPartition(final ConsumerRecords<String, T> records,
+                                        final int partNum, final String topicName) {
+        for (TopicPartition tp : records.partitions()) {
             if (tp.partition() == partNum
-                && topicName.equals(tp.topic())) {
+                    && topicName.equals(tp.topic())) {
                 return tp;
             }
         }

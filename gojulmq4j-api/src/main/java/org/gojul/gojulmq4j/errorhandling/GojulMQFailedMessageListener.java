@@ -24,10 +24,10 @@ public class GojulMQFailedMessageListener<T> implements GojulMQMessageListener<T
 
     /**
      * Constructor.
-     * @param producer the message producer used.
-     * @param listener the message listener used.
-     * @param errorTopic the error topic on which failed messages must be written.
      *
+     * @param producer   the message producer used.
+     * @param listener   the message listener used.
+     * @param errorTopic the error topic on which failed messages must be written.
      * @throws NullPointerException if any of the method parameters is {@code null}.
      */
     public GojulMQFailedMessageListener(final GojulMQMessageProducer<T> producer,

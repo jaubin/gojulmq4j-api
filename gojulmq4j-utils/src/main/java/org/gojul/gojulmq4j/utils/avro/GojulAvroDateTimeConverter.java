@@ -28,7 +28,6 @@ public class GojulAvroDateTimeConverter {
      * in date {@code d}, or {@code null} if {@code d} is {@code null}.
      *
      * @param d the date for which the conversion must be done.
-     *
      * @return the number of days since epoch (Jan 1st, 1970, 00:00:00 GMT)
      * in date {@code d}, or {@code null} if {@code d} is {@code null}.
      */
@@ -47,7 +46,6 @@ public class GojulAvroDateTimeConverter {
      * or {@code null} if {@code d} is {@code null}.
      *
      * @param d the number of days to convert.
-     *
      * @return the date which corresponds to the number of days since epoch,
      * or {@code null} if {@code d} is {@code null}.
      */
@@ -63,22 +61,24 @@ public class GojulAvroDateTimeConverter {
     /**
      * Return the date/time in milliseconds converted to epoch time in {@link Date}
      * {@code d}, or {@code null} if {@code d} is {@code null}.
+     *
      * @param d the {@link Date} to convert.
      * @return the date/time in milliseconds converted to epoch time in {@link Date}
      * {@code d}, or {@code null} if {@code d} is {@code null}.
      */
     public static Long dateTimeMillisToEpochTime(final Date d) {
-        return d == null ? null: d.getTime();
+        return d == null ? null : d.getTime();
     }
 
     /**
      * Return the date/time as a form of a {@link Date} from the data of {@code l},
      * or {@code null} if {@code l} is {@code null}.
+     *
      * @param l the long value to convert.
      * @return the date/time as a form of a {@link Date} from the data of {@code l},
      * or {@code null} if {@code l} is {@code null}.
      */
     public static Date epochTimeToDateTimeMillis(final Long l) {
-        return l == null ? null: new Date(l);
+        return l == null ? null : new Date(l);
     }
 }

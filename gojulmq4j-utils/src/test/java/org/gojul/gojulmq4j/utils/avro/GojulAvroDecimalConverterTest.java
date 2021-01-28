@@ -20,7 +20,7 @@ public class GojulAvroDecimalConverterTest {
     public void testDecimalToByteBuffer() {
         BigDecimal bd = new BigDecimal(42.0);
         ByteBuffer expected = ByteBuffer.wrap(bd.setScale(GojulAvroDecimalConverter.AVRO_BIGDECIMAL_SCALE, RoundingMode.HALF_EVEN)
-            .unscaledValue().toByteArray());
+                .unscaledValue().toByteArray());
 
         assertEquals(expected, GojulAvroDecimalConverter.decimalToByteBuffer(bd));
     }

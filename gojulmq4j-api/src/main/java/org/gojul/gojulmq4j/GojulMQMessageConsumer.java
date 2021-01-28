@@ -15,7 +15,6 @@ import java.io.Closeable;
  * close it explicitely.
  *
  * @param <T> the type of messages to listen to.
- *
  * @author julien
  */
 public interface GojulMQMessageConsumer<T> extends Closeable {
@@ -23,9 +22,8 @@ public interface GojulMQMessageConsumer<T> extends Closeable {
     /**
      * Consume messages from the topic with name {@code topicName}.
      *
-     * @param topicName the name of the topic from which messages must be consumed.
+     * @param topicName       the name of the topic from which messages must be consumed.
      * @param messageListener the listener implementation used to listen to messages.
-     *
      * @throws NullPointerException if any of the method parameters is {@code null}.
      */
     void consumeMessages(final String topicName, final GojulMQMessageListener<T> messageListener);

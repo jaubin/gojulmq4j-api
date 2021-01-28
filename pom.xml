@@ -1,10 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.gojul</groupId>
     <artifactId>gojulmq4j-parent</artifactId>
     <version>0.0.9-SNAPSHOT</version>
     <name>gojulmq4j</name>
-    <description>Abstraction of the MQ producers and consumers and various implementations for the most common MQ</description>
+    <description>Abstraction of the MQ producers and consumers and various implementations for the most common MQ
+    </description>
     <packaging>pom</packaging>
 
     <properties>
@@ -41,7 +43,7 @@
                 <artifactId>logback-core</artifactId>
                 <version>1.2.2</version>
             </dependency>
-            
+
         </dependencies>
     </dependencyManagement>
 </project>

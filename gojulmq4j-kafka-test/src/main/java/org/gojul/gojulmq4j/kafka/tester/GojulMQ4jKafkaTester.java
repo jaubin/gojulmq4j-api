@@ -25,12 +25,12 @@ public class GojulMQ4jKafkaTester {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ProducerConfig.CLIENT_ID_CONFIG, "TestProducer");
         props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG,
-              "http://localhost:8081");
+                "http://localhost:8081");
 
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "TestConsumer");
         props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG,
-              "http://localhost:8081");
+                "http://localhost:8081");
 
 
         return props;
