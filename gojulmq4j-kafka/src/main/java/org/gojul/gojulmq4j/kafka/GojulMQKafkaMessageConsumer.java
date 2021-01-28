@@ -1,9 +1,7 @@
 package org.gojul.gojulmq4j.kafka;
 
-import com.google.common.base.Preconditions;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.TopicPartition;
@@ -18,6 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+
+import static org.gojul.gojulmq4j.utils.misc.GojulArgsCheck.checkArgument;
+import static org.gojul.gojulmq4j.utils.misc.GojulStrings.isNotBlank;
 
 /**
  * Class {@code GojulMQKafkaMessageConsumer} is the Kafka implementation of interface
@@ -56,9 +57,9 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
         Objects.requireNonNull(settings, "settings is null");
         Objects.requireNonNull(cls, "cls is null");
 
-        Preconditions.checkArgument(StringUtils.isNotBlank(settings.getProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG)),
+        checkArgument(isNotBlank(settings.getProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG)),
                 String.format("%s not set", ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG));
-        Preconditions.checkArgument(StringUtils.isNotBlank(settings.getProperty(ConsumerConfig.GROUP_ID_CONFIG)),
+        checkArgument(isNotBlank(settings.getProperty(ConsumerConfig.GROUP_ID_CONFIG)),
                 String.format("%s not set", ConsumerConfig.GROUP_ID_CONFIG));
         boolean useAvro = useAvro(cls);
 
@@ -67,8 +68,8 @@ public class GojulMQKafkaMessageConsumer<T> implements GojulMQMessageConsumer<T>
         props.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, Boolean.FALSE.toString());
 
         if (useAvro) {
-            Preconditions.checkArgument(StringUtils.isNotBlank(settings.getProperty(KafkaAvroDeserializerConfig
-                    .SCHEMA_REGISTRY_URL_CONFIG)));
+            checkArgument(isNotBlank(settings.getProperty(KafkaAvroDeserializerConfig
+                    .SCHEMA_REGISTRY_URL_CONFIG)), String.format("%s not set", KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG));
             props.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class.getName());
             props.setProperty(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, Boolean.TRUE.toString());
         } else {

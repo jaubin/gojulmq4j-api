@@ -20,7 +20,7 @@ public class GojulAvroDateTimeConverter {
     final static LocalDate EPOCH = LocalDate.ofEpochDay(0L);
 
     private GojulAvroDateTimeConverter() {
-
+        throw new IllegalStateException("Go away !!!");
     }
 
     /**

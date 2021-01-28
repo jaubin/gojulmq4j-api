@@ -32,7 +32,7 @@ public class GojulAvroDecimalConverter {
      * Private constructor. Prevents the class from being instanciated.
      */
     private GojulAvroDecimalConverter() {
-
+        throw new IllegalStateException("Go away !!!");
     }
 
     /**
